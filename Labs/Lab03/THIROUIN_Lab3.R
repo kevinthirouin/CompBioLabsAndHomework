@@ -1,4 +1,4 @@
-#lab step 3:numbers of chip bags and guests for star wars party
+#lab step 3: numbers of chip bags and guests for star wars party
 chips <- 5
 guests <- 8
 
@@ -54,8 +54,8 @@ episodes <- c("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX")
 
 #lab step 15: add row names to dataframes
 row.names(movieRankings) <- episodes
-row.names(rankings_dataframe1)
-row.names(rankings_dataframe2)
+row.names(rankings_dataframe1) <- episodes
+row.names(rankings_dataframe2) <- episodes
 
 #lab step 16: print row three from step 10 matrix
 print(movieRankings[, 3])
@@ -85,4 +85,19 @@ lenny_5 <- rankings_dataframe1[5,3]
 
 rankings_dataframe1[5,3] <- lenny_2
 rankings_dataframe1[2,3] <- lenny_5
+rankings_dataframe1 #print dataframe after lenny's swap
 
+#lab step 24: access penny's ranking using column and row names (try with step 10 matrix as well as step 12 dataframe)
+movieRankings["III", "penny"]
+rankings_dataframe1["III", "penny"]
+
+#lab step 25: undo step 23 swap using names rather than index numbers
+rankings_dataframe1["V", "lenny"] <- lenny_5
+rankings_dataframe1["II", "lenny"] <- lenny_2
+rankings_dataframe1
+
+#lab step 26: redo lenny's switch using "$" operator
+rankings_dataframe1
+rankings_dataframe1$lenny[5] <- lenny_2
+rankings_dataframe1$lenny[2] <- lenny_5
+rankings_dataframe1
