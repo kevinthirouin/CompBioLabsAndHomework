@@ -54,4 +54,66 @@ which(gasVector > 0) #list indices in gasVector which correspond to non-zero (gr
 CO2data[135,] #the first non-zero value from the which() function above was the 135th value, which corresponds to the 135th row in the "CO2data" dataframe
 ####answer: 1885
 
-##3b) 
+##3b) report the years in which "Total" emmisions were between 200 and 300 million metric tons of carbon
+head(CO2data)
+Total <- CO2data[["Total"]]
+totalSubset <- which(CO2data$Total >= 200, CO2data$Total <= 300)
+length(totalSubset) #double check that this isn't the entire dataset -- it was incorrect during a previous iteration of code
+totalSubset #print the vector indices that correspond to the "Total" values between 200 and 300
+yearSubset <- CO2data$Year[129:263] #make a vector of "Year" rows 129-263
+length(yearSubset) #check length
+head(yearSubset) #look at first values to get earliest year in which "Total" was between 200 and 300
+tail(yearSubset) #look at last set of values to get latest year in which "Total" was between 200 and 300
+####answer: total emmisions were between 200 and 300 million metric tons of carbon between the years 1879 and 2013.
+
+
+##PART 2:
+
+#Lotka-Volterra predator-prey model
+n[t] <- n[t-1] + (r * n[t-1]) - (a * n[t-1] * p[t-1])
+p[t] <- p[t-1] + (k * a * n[t-1] * p[t-1]) - (m * p[t-1])
+
+#Goal: calculate abundances of predators and prey over time using this model
+
+#1)
+##define parameter values (copied from Sam's Github lab handout)
+totalGenerations <- 1000
+initPrey <- 100 	# initial prey abundance at time t = 1
+initPred <- 10		# initial predator abundance at time t = 1
+a <- 0.01 		# attack rate
+r <- 0.2 		# growth rate of prey
+m <- 0.05 		# mortality rate of predators
+k <- 0.1 		# conversion constant of prey into predators
+
+#2)
+##create time vector and make two additional vectors for storage of results
+t <- seq(1, totalGenerations) #time vector
+
+
+##
+#work still in progress. pushing to Github for grading purposes.
+##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
