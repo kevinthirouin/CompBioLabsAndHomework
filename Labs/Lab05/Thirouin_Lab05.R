@@ -13,7 +13,7 @@ if(x > 5) {
 #####################
 
 #2) Import ExampleData.csv file
-ExampleData <- read.csv(file.choose()) #Import ExampleData.csv file
+ExampleData <- read.csv("c:/users/kevin/Google Drive/GraduateSchool_EBIO/Coursework/SPRING_2020/Computational_Biology/CompBioLabsAndHomework/Labs/Lab05/ExampleData.csv") #import with fixed filepath (rather than file.choose()) for reproducibility
 str(ExampleData) #check structure of data -- data frame of one variable
 DataVector <- ExampleData$x #move data into a vector for manipulation
 
@@ -45,7 +45,7 @@ write.csv(x = FiftyToOneHundred, file = "FiftyToOneHundred.csv")
 #################
 
 #3) Import data on CO2 emmisions, and read about the dataset to answer question 3
-CO2data <- read.csv(file.choose())
+CO2data <- read.csv("c:/users/kevin/Google Drive/GraduateSchool_EBIO/Coursework/SPRING_2020/Computational_Biology/CompBioLabsAndHomework/Labs/Lab05/CO2_data_cut_paste.csv")
 head(CO2data)
 
 ##3a) find the first year that "Gas" emmisions were non-zero
@@ -70,8 +70,8 @@ tail(yearSubset) #look at last set of values to get latest year in which "Total"
 ##PART 2:
 
 #Lotka-Volterra predator-prey model
-n[t] <- n[t-1] + (r * n[t-1]) - (a * n[t-1] * p[t-1])
-p[t] <- p[t-1] + (k * a * n[t-1] * p[t-1]) - (m * p[t-1])
+## n[t] <- n[t-1] + (r * n[t-1]) - (a * n[t-1] * p[t-1])
+## p[t] <- p[t-1] + (k * a * n[t-1] * p[t-1]) - (m * p[t-1])
 
 #Goal: calculate abundances of predators and prey over time using this model
 
@@ -89,10 +89,6 @@ k <- 0.1 		# conversion constant of prey into predators
 ##create time vector and make two additional vectors for storage of results
 t <- seq(1, totalGenerations) #time vector
 
-
-##
-#work still in progress. pushing to Github for grading purposes.
-##
 
 
 
