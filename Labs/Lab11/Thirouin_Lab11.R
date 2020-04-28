@@ -52,21 +52,30 @@ meanDensityDF <- woodData %>%
 familyDensityDF <- meanDensityDF %>%
   group_by(Family) %>%
   summarise(familyMeanDensity = mean(binomialMeanDensity), n())
+View(familyDensityDF)
 
 ##6b) Sort the result of 6a by MeanDensity and store that sorted result in a data frame
 sortedFamilyDensity <- arrange(familyDensityDF, familyMeanDensity)
+View(sortedFamilyDensity)
 
 ##6c)
 ###What are the 8 families with the highest average densities?
-topEightFamilyDensities <- nrow()
-
-
+sortedLength <- nrow(sortedFamilyDensity)
+highestDensity <- sortedFamilyDensity$Family[(sortedLength-7):sortedLength]
+View(highestDensity)
 ###What are the 8 families with the lowest average densities?
+lowestDensity <- sortedFamilyDensity$Family[1:8]
+View(lowestDensity)
 
+#PART III - Plotting
+library("ggplot2")
 
+#7) Plotting densities of most and lease dense families with facets
+head(meanDensityDF)
 
+keeprows <- (camTrap$Species %in% )
 
-
+topSpecies <- 
 
 
 
