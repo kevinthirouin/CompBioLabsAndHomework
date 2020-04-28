@@ -1,6 +1,7 @@
+﻿
 # Patterns in freshwater diatom ecology - exploring ecological optima at the family level
 
-###Kevin Thirouin
+### Kevin Thirouin
 
 <hr>
 
@@ -11,7 +12,6 @@ Diatoms are a highly diverse (>75,000 described taxa; Kociolek 2018) lineage of 
 Freshwater diatom diversity is of particular interest because of their use as water quality indicators (Keck 2015). Certain diatom species can be associated with either polluted or pristine waters. The presence or absence of a particular taxon can be invaluable for understanding the conditions of a water source.
 
 I am interested in exploring and comparing family-level ranges of ecological optima for freshwater diatoms. This may be informative in estimating optimum conditions in which to grow newly discovered/described taxa, and ultimately determining whether suprageneric identification could be used more readily in estimating environmental conditions in freshwater systems.
-
 
 <hr>
 
@@ -51,10 +51,10 @@ These data represent the optimum ecological parameters for 117 different species
 
 The steps you propose here should have an obvious correspondence to the driving question(s) you listed above.
 
-###Data Re-structuring and Additions
+### Data Re-structuring and Additions
 This project will involve editing the species column of the dataset to replace spaces with underscores for ease of use in R; the addition of a "family" column will also be necessary to be able to distinguish which binomials fit into a particular taxonomic family. This will be done by cross-referencing the genera with those found on [DiatomBase](diatombase.org) and assigning them to the appropriate, accepted family in a new column in the dataset.
 
-###Steps
+### Steps
 The data will be subset to the ecological optima variables of interest (6 of the 19), and the range and average of each optimum will be identified for each diatom family. The chosen subset of ecological optima will be compared across genus/species binomials as well as families, and visualized. Statistical analyses will be run to determine if significant differences in different optima are found between taxonomic groups.
 
 
@@ -67,3 +67,6 @@ Keck, F., Rimet, F., Franc, A. and Bouchez, A. (2016), Phylogenetic signal in di
 Keck, François; Rimet, Frédéric; Franc, Alain; Bouchez, Agnès (2015), Data from: Phylogenetic signal in diatom ecology: perspectives for aquatic ecosystems biomonitoring, Dataset, https://doi.org/10.5061/dryad.0db3f
 
 KOCIOLEK J.P., BALASUBRAMANIAN K., BLANCO S., COSTE M., ECTOR L., LIU Y., KULIKOVSKIY M., LUNDHOLM N., LUDWIG T., POTAPOVA M., RIMET F., SABBE K., SALA S., SAR E., TAYLOR J., VAN DE VIJVER B., WETZEL C.E., WILLIAMS D.M., WITKOWSKI A. & WITKOWSKI J. 2018. DiatomBase. Available from: [http://www.diatombase.org](http://www.diatombase.org)
+
+
+> Written with [StackEdit](https://stackedit.io/).
