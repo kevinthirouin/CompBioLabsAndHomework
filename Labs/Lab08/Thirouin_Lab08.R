@@ -1,38 +1,25 @@
 #Lab 8
 
+##1) Markdown tutorial complete
+
+##2) Rewrote README for the repo using StackEdit 
+
+###
+
 ##3) Logistic growth model function
 
-#setup storage vectors
-time <- seq(1,12)
-abundance <- seq(1, 12) #vector of abundances
-abundance[1] <- 2500 #population abundance at timestep 1
-carryingCap <- 10000 #population carrying capacity
-growthRate <- 0.8 #intrinsic growth rate of population
-#loop
-for(i in 2:length(abundance)) {
-  abundance[i] <- abundance[i-1] + ( growthRate * abundance[i-1] * ( carryingCap - abundance[i-1]) / K )
+logGrowthModel <- function(r, K, totalGen, init_pop) {
+  LogGrowth <- rep(init_pop, totalGen)
+  for(i in 2:length(LogGrowth)) {
+    LogGrowth[i] <- LogGrowth[i-1] + (r * LogGrowth[i-1] * (K - LogGrowth[i-1]) / K)
+  }
+  Abundance <- (LogGrowth)
+  Time <- c(1:totalGen)
+  Generations <- c(1:totalGen)
+  plot(Time, Abundance, xlab = "Time (Generations)")
+  datatable <- cbind(Generations, Abundance)
+  write.csv(datatable, "c:/users/kevin/Google Drive/GraduateSchool_EBIO/Coursework/SPRING_2020/Computational_Biology/CompBioLabsAndHomework/Labs/Lab08/LogisticGrowthTable.csv")
+  return(LogGrowth)
 }
-print(abundance)
-#plot abundance over time
-plot(time, abundance)
 
-##function
-logisticGrowth <- function()
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
+logGrowthModel(.08, 10000, 12, 2500)
