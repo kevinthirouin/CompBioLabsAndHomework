@@ -3,6 +3,7 @@ rm(list = ls())
 library(dplyr)
 library(ggplot2)
 library(stringr)
+install.packages("ggdraw")
 
 #set working directory and import ecological optima dataset from Keck et al
 setwd("C:/Users/kevin/Google Drive/GraduateSchool_EBIO/Coursework/SPRING_2020/Computational_Biology/CompBioLabsAndHomework/IndProject/")
@@ -15,6 +16,9 @@ Keck_Optima$genus <- word(Keck_Optima$binomial, 1)
 Keck_Optima$binomial <- gsub(" ", "_", Keck_Optima$binomial)
 #head(Keck_Optima)
 
+
+#############################
+
 ##
 ##DO NOT RUN THIS AGAIN:
 #get list of genera from newly generated column (from line 17) and export as a .csv
@@ -23,6 +27,8 @@ Keck_Optima$binomial <- gsub(" ", "_", Keck_Optima$binomial)
 ###
 ##add family names using MS Excel, referencing DiatomBase.org, into new column of the .csv file. Renamed column header while in Excel
 ###
+
+#############################
 
 
 #import newly generated family character strings
@@ -53,6 +59,7 @@ meansBy_family <- optima_sub %>%
   summarise_if(is.numeric, mean) #summarise_if with is.numeric argument ignores variables of character strings (i.e., "family", "genus", "binomial")
     #View(meansBy_family)
 
+###################################
 
 ##Working by family:
 
@@ -73,134 +80,115 @@ mean_pH_Cymbellaceae == meansBy_family$pH[7] #returns TRUE
     #pH[7] is the average pH value for the Cymbellaceae in meansBy_family
     #View(meansBy_family)
 
-#get an "eyeball" feel for how variables differ for each family
+
+#get an "eyeball" look at variables of interest across sampled families:
+
+##NOTE: DATA WERE LOG-TRANSFORMED PRIOR TO A WEIGHTED-AVERAGE CALCULATION, BACK-TRANSFORMING NOT POSSIBLE##
+
+#plot NH4
 fam_plotNH4 <- ggplot(meansBy_family, aes(x = family, y = NH4)) + 
   geom_point() +
   labs(x = "Family", y = "NH4 (mg/L)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) + #truncates the family names on the x-axis to fit 6 plots onto cowplot more comfortably
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) #rotates and resizes family names on x-axis
+
+#plot NO3
 fam_plotNO3 <- ggplot(meansBy_family, aes(x = family, y = NO3)) + 
   geom_point() +
   labs(x = "Family", y = "NO3 (mg/L)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+#plot NO2
 fam_plotNO2 <- ggplot(meansBy_family, aes(x = family, y = NO2)) + 
   geom_point() +
   labs(x = "Family", y = "NO2 (mg/L)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+#plot pH
+fam_plot_pH <- ggplot(meansBy_family, aes(x = family, y = pH)) + 
+  geom_point() +
+  labs(x = "Family", y = ("pH")) +
+  scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+#plot temp
 fam_plotTemp <- ggplot(meansBy_family, aes(x = family, y = Temp)) + 
   geom_point() +
-  labs(x = "Family", y = ("Temperature (°C)")) +
+  labs(x = "Family", y = "Temperature (°C)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-fam_plotpH <- ggplot(meansBy_family, aes(x = family, y = pH)) + 
-  geom_point() +
-  labs(x = "Family", y = "pH") +
-  scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+#plot PO4
 fam_plotPO4 <- ggplot(meansBy_family, aes(x = family, y = PO4)) + 
   geom_point() +
-  labs(x = "Family", y = "PO4 (mg/L)") +
+  labs(x = "Family", y = "PO4 (mg/L") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-cowplot::plot_grid(fam_plotNH4, fam_plotNO3, fam_plotNO2, fam_plotpH, fam_plotTemp, fam_plotPO4, nrow = 3)
+
+#combine plots with title and save combined plot to file
+panelPlot <- cowplot::plot_grid(fam_plotNH4, fam_plotNO3, fam_plotNO2, fam_plot_pH, fam_plotTemp, fam_plotPO4, nrow = 3)
+ggsave(filename = "EcoOptPanelPlot.jpg", plot = panelPlot)
+
+
+#######################
+
+##run ANOVA on family optima, and decide which relationships to plot at generic level based on that
+
+#ANOVA:
+
+##WORKING...
+
+#######################
+
+
+##plot average optima by genus, colored by family
+
+#WORKING ON THIS...
+ggplot(optima_sub, aes(x = genus, y = pH, color = family)) + 
+  geom_point() +
+  labs(x = "Genus", y = "log pH") +
+  scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+
+#remove 
+
+
+##BOXPLOT for comparing family optima values (MUST have adequate genus-level representation,
+#                                             so omit families that have fewer than (x) genera)
+ggplot(optima_sub) +
+  geom_boxplot( aes ( x = family, y = ?? ) ) + #placeholder for later
+  labs(x = "Family", y = "variable") +
+  scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 
 
 
 
 
-title <- ggdraw() + 
-  draw_label(
-    "Average family ecological optima",
-    fontface = 'bold',
-    x = 0,
-    hjust = 0
-  ) +
-  theme(
-    # add margin on the left of the drawing canvas,
-    # so title is aligned with left edge of first plot
-    plot.margin = margin(0, 0, 0, 7)
-  )
-plot_grid(
-  title, plot_row,
-  ncol = 1,
-  # rel_heights values control vertical title margins
-  rel_heights = c(0.1, 1)
-)
-  
-  
-  
 
 
 
 
 
+
+
+
+
+##extra stuff
 
 #list the number of taxa representing each family
-str_count(meansBy_family$family, "Achnanthidiaceae")
+#str_count(meansBy_family$family, "Achnanthidiaceae")
 
-length(meansBy_family[which(meansBy_family$family == "Achnanthidiaceae")])
+#length(meansBy_family[which(meansBy_family$family == "Achnanthidiaceae")])
 
-#another try at counting number of representatives of each family (NOT DONE YET)
-test <- meansBy_family %>%
-  add_count()
+##check data structure, change character strings to factors
+#str(optima_sub)
+#optima_sub$family <- as.factor(optima_sub$family)
+#optima_sub$genus <- as.factor(optima_sub$genus)
+#optima_sub$binomial <- as.factor(optima_sub$binomial)
 
-#plot stuff!
-
-
-
-
-##check data structure for plotting, change character strings to factors
-str(optima_sub)
-optima_sub$family <- as.factor(optima_sub$family)
-optima_sub$genus <- as.factor(optima_sub$genus)
-optima_sub$binomial <- as.factor(optima_sub$binomial)
-
-
-
-
-
-###after descovering that optima values are based on zero(?), or otherwise scaled strangely and there is no information/metadata about this
-#
-#experimenting with the data
-
-
-#trying to figure out how the weighted averages were calculated
-#GENERAL weighted avg formula example:
-##   [(2)(4) + (1)(3)/10] = (8 + 1)/10 = 11
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#average of initial pH column
-avgInitial_pH <- mean(Keck_Optima$pH)
-print(avgInitial_pH)
-min_pH <- min(Keck_Optima$pH)
-print(min_pH)
-range <- range(Keck_Optima$pH)
-max <- max(Keck_Optima$pH)
-max - min_pH
 
