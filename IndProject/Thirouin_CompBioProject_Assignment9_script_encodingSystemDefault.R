@@ -63,7 +63,7 @@ meansBy_family <- optima_sub %>%
 
 ##Working by family:
 
-#validate by calculating means manually for a few families/optima metrics
+#validate lines 57 through 59 by calculating means manually for a few families/optima metrics
 mean_Naviculaceae <- optima_sub %>%
   filter(family == "Naviculaceae")
 meanNH4_Naviculaceae <- mean(mean_Naviculaceae$NH4)
@@ -219,7 +219,7 @@ ggsave(filename = "FamilyLevellogNO3_boxplot.png", plot = boxplotDiatoms)
 ##additional plot for discussion (see README)
 extra_boxplot <- ggplot(optima_sub) +
   geom_boxplot( aes ( x = family, y = pH ) ) +
-  labs(x = "Family", y = "log pH", title = "log pH by diatom genus") +
+  labs(x = "Family", y = "log pH", title = "log pH by diatom family") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 extra_boxplot
