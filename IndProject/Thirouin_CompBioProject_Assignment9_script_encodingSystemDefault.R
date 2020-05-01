@@ -211,7 +211,16 @@ ggsave(filename = "GenusLevellogNH4.png", plot = logNH4plot)
 ##boxplot for comparing NO3 by family
 boxplotDiatoms <- ggplot(sampleDF) +
   geom_boxplot( aes ( x = family, y = NO3 ) ) +
-  labs(x = "Family", y = "log NO3 (mg/L", title = "log NO3 by diatom family") +
+  labs(x = "Family", y = "log NO3 (mg/L)", title = "log NO3 by diatom family") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ggsave(filename = "FamilyLevellogNO3_boxplot.png", plot = boxplotDiatoms)
+
+##additional plot for discussion (see README)
+extra_boxplot <- ggplot(optima_sub) +
+  geom_boxplot( aes ( x = family, y = pH ) ) +
+  labs(x = "Family", y = "log pH", title = "log pH by diatom genus") +
+  scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+extra_boxplot
+ggsave(filename = "extra_logpH_boxplot.png", plot = extra_boxplot)
