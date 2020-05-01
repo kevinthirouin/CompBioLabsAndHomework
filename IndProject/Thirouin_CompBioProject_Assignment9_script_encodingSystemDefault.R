@@ -3,7 +3,8 @@ rm(list = ls())
 library(dplyr)
 library(ggplot2)
 library(stringr)
-install.packages("ggdraw")
+library(plyr)
+library(broom)
 
 #set working directory and import ecological optima dataset from Keck et al
 setwd("C:/Users/kevin/Google Drive/GraduateSchool_EBIO/Coursework/SPRING_2020/Computational_Biology/CompBioLabsAndHomework/IndProject/")
@@ -16,11 +17,10 @@ Keck_Optima$genus <- word(Keck_Optima$binomial, 1)
 Keck_Optima$binomial <- gsub(" ", "_", Keck_Optima$binomial)
 #head(Keck_Optima)
 
-
 #############################
 
 ##
-##DO NOT RUN THIS AGAIN:
+##DO NOT RUN THIS AGAIN -- generated file ("families_genera_filled.csv") is in GitHub repo
 #get list of genera from newly generated column (from line 17) and export as a .csv
     ##write.csv(Keck_Optima$genus, file = "families_genera.csv", row.names = F) #NOTE: this keeps all instances of repeated genera to retain number of rows for re-import in line 27
 
@@ -41,7 +41,7 @@ Keck_Optima$family <- families_genera$family
 
 #reorder variable columns and subset the dataframe to include only taxon names and ecological variables of interest: NH4, NO3, NO2, NKJ, PO4, Mg2, pH, Temp, Cond, K, Na
 optima_sub <- Keck_Optima %>%
-  select(family, genus, binomial, NH4, NO3, NO2, NKJ, PO4, Mg2, pH, Temp, Cond, K, Na)
+  select(family, genus, binomial, NH4, NO3, NO2, PO4, pH, Temp)
 #head(optima_sub)
 
 #explore and identify families
@@ -80,115 +80,138 @@ mean_pH_Cymbellaceae == meansBy_family$pH[7] #returns TRUE
     #pH[7] is the average pH value for the Cymbellaceae in meansBy_family
     #View(meansBy_family)
 
+#look at variables of interest across sampled families:
 
-#get an "eyeball" look at variables of interest across sampled families:
-
-##NOTE: DATA WERE LOG-TRANSFORMED PRIOR TO A WEIGHTED-AVERAGE CALCULATION, BACK-TRANSFORMING NOT POSSIBLE##
+##NOTE: DATA WERE LOG-TRANSFORMED PRIOR TO A WEIGHTED-AVERAGE CALCULATION, BACK-TRANSFORMING NOT POSSIBLE, SEE README
 
 #plot NH4
 fam_plotNH4 <- ggplot(meansBy_family, aes(x = family, y = NH4)) + 
   geom_point() +
-  labs(x = "Family", y = "NH4 (mg/L)") +
+  labs(x = "Family", y = "log NH4 (mg/L)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) + #truncates the family names on the x-axis to fit 6 plots onto cowplot more comfortably
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) #rotates and resizes family names on x-axis
 
 #plot NO3
 fam_plotNO3 <- ggplot(meansBy_family, aes(x = family, y = NO3)) + 
   geom_point() +
-  labs(x = "Family", y = "NO3 (mg/L)") +
+  labs(x = "Family", y = "log NO3 (mg/L)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 #plot NO2
 fam_plotNO2 <- ggplot(meansBy_family, aes(x = family, y = NO2)) + 
   geom_point() +
-  labs(x = "Family", y = "NO2 (mg/L)") +
+  labs(x = "Family", y = "log NO2 (mg/L)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 #plot pH
 fam_plot_pH <- ggplot(meansBy_family, aes(x = family, y = pH)) + 
   geom_point() +
-  labs(x = "Family", y = ("pH")) +
+  labs(x = "Family", y = ("log pH")) +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 #plot temp
 fam_plotTemp <- ggplot(meansBy_family, aes(x = family, y = Temp)) + 
   geom_point() +
-  labs(x = "Family", y = "Temperature (°C)") +
+  labs(x = "Family", y = "log Temperature (°C)") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 #plot PO4
 fam_plotPO4 <- ggplot(meansBy_family, aes(x = family, y = PO4)) + 
   geom_point() +
-  labs(x = "Family", y = "PO4 (mg/L") +
+  labs(x = "Family", y = "log PO4 (mg/L") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 #combine plots with title and save combined plot to file
 panelPlot <- cowplot::plot_grid(fam_plotNH4, fam_plotNO3, fam_plotNO2, fam_plot_pH, fam_plotTemp, fam_plotPO4, nrow = 3)
-ggsave(filename = "EcoOptPanelPlot.jpg", plot = panelPlot)
-
-
-#######################
-
-##run ANOVA on family optima, and decide which relationships to plot at generic level based on that
-
-#ANOVA:
-
-##WORKING...
+ggsave(filename = "EcoOptPanelPlot.png", plot = panelPlot)
 
 #######################
+#######################
 
+##STATS and further subsetting
 
-##plot average optima by genus, colored by family
+#determine number of representatives in each family, remove those with # of reps < 5
+rep_numbers <- optima_sub %>% 
+  group_by(family) %>% 
+  summarise(n())
+MoreThan5 <- subset(rep_numbers, `n()` > 5)
+list(MoreThan5)
 
-#WORKING ON THIS...
-ggplot(optima_sub, aes(x = genus, y = pH, color = family)) + 
+# filter by families present with more than 5 taxa as seen in output of line 145 (a little magic number-y...)
+filteredFamilies <- filter(optima_sub, 
+              family %in% c("Bacillariaceae" ,"Cymbellaceae","Fragilariaceae" ,"Gomphonemataceae","Naviculaceae","Stephanodiscaceae") & 
+                family %in% c("Bacillariaceae" ,"Cymbellaceae","Fragilariaceae" ,"Gomphonemataceae","Naviculaceae","Stephanodiscaceae"))
+#str(filteredFamilies)
+#View(filteredFamilies)
+
+#build a new dataframe of random samples of 5 taxa from each of the "MoreThan5" families
+Bac <- subset(filteredFamilies, family == "Bacillariaceae")
+Cymb <- subset(filteredFamilies, family == "Cymbellaceae")
+Frag <- subset(filteredFamilies, family == "Gomphonemataceae")
+Navic <- subset(filteredFamilies, family == "Naviculaceae")
+Steph <- subset(filteredFamilies, family == "Stephanodiscaceae")
+
+#random samples
+BacSample <-  Bac[sample(nrow(Bac), 5), ]
+CymbSample <- Cymb[sample(nrow(Cymb), 5), ]
+FragSample <- Frag[sample(nrow(Frag), 5), ]
+NavicSample <- Navic[sample(nrow(Navic), 5), ]
+StephSample <- Steph[sample(nrow(Steph), 5), ]
+
+#combine individual sample dataframes into new dataframe
+sampleDF <- rbind.fill(BacSample, CymbSample, FragSample, NavicSample, StephSample)
+
+##run ANOVA on family optima
+pHanova <- lm(pH ~ family, sampleDF ) ##  p > 0.05
+summary(pHanova)
+NO3anova <- lm(NO3 ~ family, sampleDF) ##  p < 0.05, significant
+summary(NO3anova)
+NO2anova <- lm(NO2 ~ family, sampleDF) ##  p > 0.05
+summary(NO2anova)
+NH4anova <- lm(NH4 ~ family, sampleDF) ##  p > 0.05
+summary(NH4anova)
+PO4anova <- lm(PO4 ~ family, sampleDF) ##  p > 0.05
+summary(PO4anova)
+TempAnova <- lm(Temp ~ family, sampleDF) ##  p > 0.05
+summary(TempAnova)
+
+##ANOVA on genus optima
+pHanovaG <- lm(pH ~ genus, sampleDF) ##  p > 0.05
+summary(pHanovaG)
+NO3anovaG <- lm(NO3 ~ genus, sampleDF) ##  p > 0.05
+summary(NO3anovaG)
+NO2anovaG <- lm(NO2 ~ genus, sampleDF) ##  p > 0.05
+summary(NO2anovaG)
+NH4anovaG <- lm(NH4 ~ genus, sampleDF) ##  p < 0.05, marginally significant
+summary(NH4anovaG)
+PO4anovaG <- lm(PO4 ~ genus, sampleDF) ##  p > 0.05
+summary(PO4anovaG)
+TempAnovaG <- lm(Temp ~ genus, sampleDF) ##  p > 0.05
+summary(TempAnovaG)
+
+#######################
+#######################
+
+##MORE PLOTS, after subsetting to random samples of 5 (lines 140 through 168)
+
+##plot average NH4 by genus, colored by family, save plot to file
+##ANOVA on NH4 by genus (line 141) showed statistical significance
+logNH4plot <- ggplot(sampleDF, aes(x = genus, y = NH4, color = family)) + 
   geom_point() +
-  labs(x = "Genus", y = "log pH") +
+  labs(x = "Genus", y = "log NH4", title = "log NH4 by diatom genus") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+ggsave(filename = "GenusLevellogNH4.png", plot = logNH4plot)
 
-
-#remove 
-
-
-##BOXPLOT for comparing family optima values (MUST have adequate genus-level representation,
-#                                             so omit families that have fewer than (x) genera)
-ggplot(optima_sub) +
-  geom_boxplot( aes ( x = family, y = ?? ) ) + #placeholder for later
-  labs(x = "Family", y = "variable") +
+##boxplot for comparing NO3 by family
+boxplotDiatoms <- ggplot(sampleDF) +
+  geom_boxplot( aes ( x = family, y = NO3 ) ) +
+  labs(x = "Family", y = "log NO3 (mg/L", title = "log NO3 by diatom family") +
   scale_x_discrete(label = function(x) stringr::str_trunc(x, 9)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##extra stuff
-
-#list the number of taxa representing each family
-#str_count(meansBy_family$family, "Achnanthidiaceae")
-
-#length(meansBy_family[which(meansBy_family$family == "Achnanthidiaceae")])
-
-##check data structure, change character strings to factors
-#str(optima_sub)
-#optima_sub$family <- as.factor(optima_sub$family)
-#optima_sub$genus <- as.factor(optima_sub$genus)
-#optima_sub$binomial <- as.factor(optima_sub$binomial)
-
-
+ggsave(filename = "FamilyLevellogNO3_boxplot.png", plot = boxplotDiatoms)
