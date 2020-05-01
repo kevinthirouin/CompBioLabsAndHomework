@@ -135,12 +135,21 @@ ggsave(filename = "EcoOptPanelPlot.png", plot = panelPlot)
 
 ##STATS and further subsetting
 
+##!!!!!!!!!!!!!!!!!!!!!!
+##LINES 143 through 147 WERE RUNNING JUST FINE AS OF 04/30/2020, AND I WAS ABLE TO IDENTIFY THE 5 FAMILIES WITH THE MOST REPRESENTATION. I DID A PACKAGE UPDATE AND NOW IT WON'T RUN!
+##IT DOES NOT AFFECT THE DOWNSTREAM CODE IF IT DOES NOT RUN
+##!!!!!!!!!!!!!!!!!!!!!!
+
+
 #determine number of representatives in each family, remove those with # of reps < 5
-rep_numbers <- optima_sub %>% 
-  group_by(family) %>% 
-  summarise(n())
-MoreThan5 <- subset(rep_numbers, `n()` > 5)
-list(MoreThan5)
+#rep_numbers <- optima_sub %>% 
+#  group_by(family) %>% 
+#  summarise(n())
+#MoreThan5 <- subset(rep_numbers, `n()` > 5)
+#list(MoreThan5)
+
+
+####
 
 # filter by families present with more than 5 taxa as seen in output of line 145 (a little magic number-y...)
 filteredFamilies <- filter(optima_sub, 
